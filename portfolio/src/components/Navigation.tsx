@@ -8,13 +8,22 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [mounted, setMounted] = useState(false);
   const { scrollY } = useScroll();
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useMotionValueEvent(scrollY, "change", (latest) => {
-    setIsScrolled(latest > 50);
+    if (mounted) {
+      setIsScrolled(latest > 50);
+    }
   });
 
   useEffect(() => {
+    if (!mounted) return;
+
     const handleScroll = () => {
       const sections = ['home', 'about', 'projects', 'contact'];
       const scrollPosition = window.scrollY + 100;
@@ -35,9 +44,11 @@ const Navigation = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [mounted]);
 
   useEffect(() => {
+    if (!mounted) return;
+
     const ctx = gsap.context(() => {
       if (isMobileMenuOpen) {
         gsap.to('.mobile-menu', {
@@ -67,7 +78,7 @@ const Navigation = () => {
     });
 
     return () => ctx.revert();
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, mounted]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -84,6 +95,8 @@ const Navigation = () => {
     { id: 'contact', label: 'Contact' }
   ];
 
+  if (!mounted) return null;
+
   return (
     <>
       <motion.nav
@@ -96,11 +109,11 @@ const Navigation = () => {
         animate={{ y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <motion.div
-              className="text-2xl font-bold text-white cursor-pointer"
+              className="text-xl sm:text-2xl font-bold text-white cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('home')}
@@ -110,11 +123,11 @@ const Navigation = () => {
             </motion.div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
               {navItems.map((item) => (
                 <motion.button
                   key={item.id}
-                  className={`relative px-4 py-2 text-gray-300 font-medium transition-colors duration-300 ${
+                  className={`relative px-3 lg:px-4 py-2 text-sm lg:text-base text-gray-300 font-medium transition-colors duration-300 ${
                     activeSection === item.id ? 'text-white' : 'hover:text-white'
                   }`}
                   onClick={() => scrollToSection(item.id)}
@@ -136,7 +149,7 @@ const Navigation = () => {
             {/* CTA Button */}
             <div className="hidden md:block">
               <motion.button
-                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
+                className="px-4 lg:px-6 py-2 text-sm lg:text-base bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
                 whileHover={{ 
                   scale: 1.05,
                   boxShadow: "0 10px 30px rgba(139, 92, 246, 0.4)"
@@ -178,14 +191,14 @@ const Navigation = () => {
 
       {/* Mobile Menu */}
       <div 
-        className={`mobile-menu fixed top-0 right-0 w-80 h-full bg-gradient-to-br from-purple-900/95 via-slate-900/95 to-indigo-900/95 backdrop-blur-lg border-l border-white/10 z-40 transform translate-x-full md:hidden`}
+        className="mobile-menu fixed top-0 right-0 w-80 max-w-[85vw] h-full bg-gradient-to-br from-purple-900/95 via-slate-900/95 to-indigo-900/95 backdrop-blur-lg border-l border-white/10 z-40 transform translate-x-full md:hidden"
       >
-        <div className="pt-20 px-6">
-          <div className="space-y-6">
+        <div className="pt-16 sm:pt-20 px-6">
+          <div className="space-y-4 sm:space-y-6">
             {navItems.map((item) => (
               <motion.button
                 key={item.id}
-                className={`mobile-menu-item block w-full text-left py-4 px-6 text-xl font-medium rounded-lg transition-all duration-300 ${
+                className={`mobile-menu-item block w-full text-left py-3 sm:py-4 px-4 sm:px-6 text-lg sm:text-xl font-medium rounded-lg transition-all duration-300 ${
                   activeSection === item.id 
                     ? 'text-white bg-gradient-to-r from-purple-600/30 to-pink-600/30 border border-purple-500/30' 
                     : 'text-gray-300 hover:text-white hover:bg-white/5'
@@ -199,9 +212,9 @@ const Navigation = () => {
             ))}
           </div>
 
-          <div className="mt-12">
+          <div className="mt-8 sm:mt-12">
             <motion.button
-              className="mobile-menu-item w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full"
+              className="mobile-menu-item w-full px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full"
               onClick={() => scrollToSection('contact')}
               whileHover={{ 
                 scale: 1.05,
@@ -209,30 +222,30 @@ const Navigation = () => {
               }}
               whileTap={{ scale: 0.95 }}
             >
-                             Let&apos;s Talk
+              Let&apos;s Talk
             </motion.button>
           </div>
 
           {/* Social Links */}
-          <div className="mobile-menu-item mt-12">
+          <div className="mobile-menu-item mt-8 sm:mt-12">
             <h4 className="text-white font-semibold mb-4">Follow Me</h4>
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               {[
-                { name: 'GitHub', color: 'from-gray-600 to-gray-800' },
-                { name: 'LinkedIn', color: 'from-blue-600 to-blue-800' },
-                { name: 'Twitter', color: 'from-sky-400 to-sky-600' }
+                { name: 'GitHub', color: 'from-gray-600 to-gray-800', icon: 'G' },
+                { name: 'LinkedIn', color: 'from-blue-600 to-blue-800', icon: 'L' },
+                { name: 'Twitter', color: 'from-sky-400 to-sky-600', icon: 'T' }
               ].map((social) => (
                 <motion.a
                   key={social.name}
                   href="#"
-                  className={`w-10 h-10 bg-gradient-to-r ${social.color} rounded-full flex items-center justify-center text-white`}
+                  className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${social.color} rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base`}
                   whileHover={{ 
                     scale: 1.1,
                     rotate: 5
                   }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  <span className="text-xs">{social.name[0]}</span>
+                  {social.icon}
                 </motion.a>
               ))}
             </div>
