@@ -48,7 +48,7 @@ const Contact = () => {
       // Form field focus animations
       const fields = document.querySelectorAll('.form-field');
       fields.forEach((field) => {
-        const input = field.querySelector('input, textarea');
+        const input = field.querySelector('input, textarea') as HTMLInputElement | HTMLTextAreaElement;
         const label = field.querySelector('label');
         
         if (input && label) {
@@ -155,8 +155,7 @@ const Contact = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.8,
-        ease: [0.6, -0.05, 0.01, 0.99]
+        duration: 0.8
       }
     }
   };

@@ -33,7 +33,6 @@ const Projects = () => {
       gsap.set('.project-card', {
         rotationX: 45,
         rotationY: 45,
-        z: -100,
         opacity: 0
       });
 
@@ -144,8 +143,7 @@ const Projects = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.8,
-        ease: [0.6, -0.05, 0.01, 0.99]
+        duration: 0.8
       }
     }
   };
@@ -154,21 +152,16 @@ const Projects = () => {
     hidden: { 
       rotateX: 45,
       rotateY: 45,
-      z: -100,
       opacity: 0,
       scale: 0.8
     },
     visible: {
       rotateX: 0,
       rotateY: 0,
-      z: 0,
       opacity: 1,
       scale: 1,
       transition: {
-        duration: 0.8,
-        ease: "back.out(1.7)",
-        type: "spring",
-        stiffness: 100
+        duration: 0.8
       }
     }
   };
@@ -334,8 +327,7 @@ const Projects = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ 
                           delay: index * 0.1 + tagIndex * 0.05,
-                          duration: 0.3,
-                          ease: "back.out(1.7)"
+                          duration: 0.3
                         }}
                         whileHover={{ 
                           scale: 1.1,

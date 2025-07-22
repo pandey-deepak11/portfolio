@@ -94,7 +94,7 @@ const Navigation = () => {
         }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.8, ease: [0.6, -0.05, 0.01, 0.99] }}
+        transition={{ duration: 0.8 }}
       >
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
